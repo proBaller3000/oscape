@@ -1,18 +1,27 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-found=0
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oscape"
+mkdir -p "$CACHE_DIR"
+
+art=""
 while IFS= read -r player; do
   status="$(playerctl -p "$player" status 2>/dev/null)" || continue
   [ "$status" = "Playing" ] || continue
-
   art="$(playerctl -p "$player" metadata mpris:artUrl 2>/dev/null || true)"
-  [ -n "$art" ] || art="$(playerctl -p "$player" metadata xesam:url 2>/dev/null || true)"
-  [ -n "$art" ] || continue
-
-  title="$(playerctl -p "$player" metadata --format '{{xesam:artist}} - {{xesam:title}}' 2>/dev/null || true)"
-  printf '%s\t%s\t%s\n' "$player" "$title" "$art"
-  found=1
+  [ -n "$art" ] && break
 done < <(playerctl -l 2>/dev/null)
 
-[ "$found" -eq 1 ] || echo "no playing media with artwork" >&2
+if [ -z "$art" ]; then
+  echo "no playing media with artwork" >&2
+  exit 1
+fi
+
+TMP="$CACHE_DIR/.artwork.tmp"
+curl -fsSL "$art" -o "$TMP"
+DEST="$CACHE_DIR/artwork-$(sha256sum "$TMP" | cut -d' ' -f1)"
+mv "$TMP" "$DEST"
+
+noctalia msg wallpaper-set "$DEST"
+find "$CACHE_DIR" -maxdepth 1 -type f \
+  \( -name 'artwork-*' -o -name 'artwork' \) ! -name "$(basename "$DEST")" -delete
