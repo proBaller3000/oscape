@@ -27,3 +27,14 @@ if ! command -v noctalia >/dev/null 2>&1; then
   echo "warning: noctalia not found; static wallpaper needs noctalia-git" >&2
 fi
 
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BIN_DIR="${XDG_BIN_HOME:-$HOME/.local/bin}"
+mkdir -p "$BIN_DIR"
+ln -sf "$REPO_DIR/oscape.sh" "$BIN_DIR/oscape"
+
+if [ ! -f "$REPO_DIR/oscape.sh" ]; then
+  echo "warning: $REPO_DIR/oscape.sh does not exist yet; the oscape alias will be dangling" >&2
+fi
+
+echo ":: Done. Start with: oscape"
+
