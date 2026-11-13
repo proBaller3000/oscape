@@ -14,6 +14,10 @@ Sets the desktop background based on operating system info on what is currently 
     - starts adaptive background
       - song artwork
       - or video - sound on
+      - if started with --yt
+        - treat the os info on currently played as youtube video
+        - if video url not directly available, search youtube by title
+        - play youtube video as wallpaper background - sound on
 
 # Compatibility
 
