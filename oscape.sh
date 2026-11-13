@@ -2,17 +2,17 @@
 set -euo pipefail
 
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/oscape"
+POLL_INTERVAL=1
 
 get_playing_art() {
-  local player status art
-  while IFS= read -r player; do
-    status="$(playerctl -p "$player" status 2>/dev/null)" || continue
+  local status art
+  while IFS=$'\t' read -r status art; do
     [ "$status" = "Playing" ] || continue
-    art="$(playerctl -p "$player" metadata mpris:artUrl 2>/dev/null || true)"
     [ -n "$art" ] || continue
     printf '%s\n' "$art"
     return 0
-  done < <(playerctl -l 2>/dev/null)
+  done < <(playerctl --all-players metadata \
+    --format $'{{status}}\t{{mpris:artUrl}}' 2>/dev/null || true)
   return 1
 }
 
@@ -33,15 +33,25 @@ cleanup_art() {
     ! -name "$(basename "$keep")" -delete
 }
 
+watch_art() {
+  local art last_url="" dest last_dest=""
+  while true; do
+    art="$(get_playing_art || true)"
+    if [ -n "$art" ] && [ "$art" != "$last_url" ]; then
+      if dest="$(cache_art "$art")"; then
+        if [ "$dest" = "$last_dest" ] || noctalia msg wallpaper-set "$dest"; then
+          cleanup_art "$dest"
+          last_dest="$dest"
+          last_url="$art"
+        fi
+      fi
+    fi
+    sleep "$POLL_INTERVAL"
+  done
+}
+
 main() {
-  local art dest
-  if ! art="$(get_playing_art)"; then
-    echo "no playing media with artwork" >&2
-    return 1
-  fi
-  dest="$(cache_art "$art")"
-  noctalia msg wallpaper-set "$dest"
-  cleanup_art "$dest"
+  watch_art
 }
 
 main "$@"
