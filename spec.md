@@ -27,7 +27,7 @@ Sets the desktop background based on operating system info on what is currently 
 | `playerctl` | Detect playing media and `mpris:artUrl` via MPRIS | pacman (`extra/playerctl`) |
 | `curl` | Fetch artwork/thumbnails from `file://` and `https://` URLs | pacman (`extra/curl`) |
 | `mpv` | Video playback engine for video wallpaper and YouTube streams | pacman (`extra/mpv`) |
-| `mpvpaper` | Render video as a Wayland wallpaper layer (sound on) | AUR (`mpvpaper`, via `yay`) |
+| `mpvpaper` | Render video as a Wayland wallpaper layer (sound on) | upstream GitHub tag 1.9 (pinned b2sum, built locally) |
 | `yt-dlp` | `--yt`: search YouTube by title, resolve stream and thumbnail | pacman (`extra/yt-dlp`, pulls `yt-dlp-ejs`) |
 | `deno` | JS runtime required by `yt-dlp` for YouTube (EJS/nsig) | pacman (`extra/deno`) |
 | `ImageMagick` (`magick`) | Optional: upscale low-res artwork (e.g. 150x150) for 1080p | pacman (`extra/imagemagick`) |
