@@ -5,7 +5,7 @@ Sets the desktop background based on operating system info on what is currently 
 # Layout
 
 - two scripts:
-  - install_dependencies.sh
+  - install.sh
     - install dependencies from those sources, prefferred in order:
     - arch repo via pacman
     - mise
@@ -40,7 +40,5 @@ Current setup:
 - Wayland
 - Hyprland
 - Noctalia shell
-
-
 
 
