@@ -13,7 +13,7 @@ fi
 
 echo ":: Installing runtime packages"
 $SUDO pacman -S --needed --noconfirm \
-  playerctl curl mpv yt-dlp deno imagemagick
+  playerctl curl ffmpeg mpv yt-dlp deno imagemagick
 
 # Needed to build mpvpaper locally: meson/gcc/pkgconf compile it,
 # wayland/wayland-protocols/libglvnd provide its Wayland/EGL headers and libs.
